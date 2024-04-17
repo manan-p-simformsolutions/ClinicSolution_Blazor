@@ -1,0 +1,100 @@
+﻿@page "/appointment"
+@inject HttpClient client
+@inject IJSRuntime js
+
+<h3>appointment</h3>
+
+<div class="form-group">
+    <a class="btn btn-success" href="appointment/create"><i class="oi oi-plus"></i> Create New</a>&nbsp;<small>Add as many appointments as you wish.</small>
+</div>
+<br>
+
+@if (appointments == null)
+{
+    <text>Loading...</text>
+}
+else if (appointments.Length == 0)
+{
+    <text>No Records Found.</text>
+}
+else
+{
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Filter..."
+               @bind="Filter"
+               @bind:event="oninput">
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Patient Name</th>
+                <th>Alias</th>
+                <th>Problem</th>
+                <th>ClinicalMedicine</th>
+                <th>Prescription</th>
+                <th>Specification</th>
+                <th>AppointmentDate</th>
+                <th>Bill Amount</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Appointment appointment in appointments)
+            {
+                if (!IsVisible(appointment))
+                    continue;
+                <tr>
+                    <td>@appointment.Id</td>
+                    <td>@appointment.PatientName</td>
+                    <td>@appointment.Alias</td>
+                    <td>@appointment.Problem</td>
+                    <td>@appointment.ClinicalMedicine</td>
+                    <td>@appointment.Prescription</td>
+                    <td>@appointment.Specification</td>
+                    <td>@appointment.AppointmentDate.ToString("MMM dd/yyyy")</td>
+                    <td>@appointment.Amount</td>
+                    <td>
+                        <a class="btn btn-success" href="appointment/edit/@appointment.Id">Edit</a>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(appointment.Id))">Delete</button>
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+}
+@code {
+    public string Filter { get; set; }
+    Appointment[] appointments { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        appointments = await client.GetFromJsonAsync<Appointment[]>("api/appointment");
+    }
+
+    async Task Delete(int appointmentId)
+    {
+        var appointment = appointments.First(x => x.Id == appointmentId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {appointment.PatientName}'s appointment of {appointment.Id} ({appointment.Id}) Record?"))
+        {
+            await client.DeleteAsync($"api/appointment/{appointmentId}");
+            await OnInitializedAsync();
+        }
+    }
+    bool IsVisible(Appointment appointment)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+
+        if (appointment.PatientName.Contains(Filter, StringComparison.OrdinalIgnoreCase) 
+            || appointment.Id.ToString().StartsWith(Filter) 
+            || appointment.Problem.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (appointment.AppointmentDate.ToString("MMM dd/yyyy").Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+}

@@ -1,0 +1,84 @@
+﻿@page "/disease"
+@inject HttpClient client
+@inject IJSRuntime js
+
+<h3>disease</h3>
+
+<div class="form-group">
+    <a class="btn btn-success" href="disease/create"><i class="oi oi-plus"></i> Create New</a>&nbsp;<small>Add as many diseases as you wish.</small>
+</div>
+<br>
+
+@if (diseases == null)
+{
+    <text>Loading...</text>
+}
+else if (diseases.Length == 0)
+{
+    <text>No Records Found.</text>
+}
+else
+{
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Filter..."
+               @bind="Filter"
+               @bind:event="oninput">
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Disease Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Disease disease in diseases)
+            {
+                if (!IsVisible(disease))
+                    continue;
+                <tr>
+                    <td>@disease.Id</td>
+                    <td>@disease.Name</td>
+                    
+                    <td>
+                        <a class="btn btn-success" href="disease/edit/@disease.Id">Edit</a>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(disease.Id))">Delete</button>
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+}
+@code {
+    public string Filter { get; set; }
+    Disease[] diseases { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        diseases = await client.GetFromJsonAsync<Disease[]>("api/disease");
+    }
+
+    async Task Delete(int diseaseId)
+    {
+        var disease = diseases.First(x => x.Id == diseaseId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {disease.Name}'s ({disease.Id}) Record?"))
+        {
+            await client.DeleteAsync($"api/disease/{diseaseId}");
+            await OnInitializedAsync();
+        }
+    }
+    bool IsVisible(Disease disease)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+
+        if (disease.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase)
+            || disease.Id.ToString().StartsWith(Filter))
+            return true;
+
+
+        return false;
+    }
+}

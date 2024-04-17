@@ -1,0 +1,15 @@
+﻿@page "/disease/create"
+@inject HttpClient http
+@inject NavigationManager uriHelper
+<h3>Create</h3>
+<Form ButtonText="Add Disease" disease="@disease"
+      OnValidSubmit="@CreateDisease" />
+@code {
+    Disease disease = new Disease();
+    protected override void OnInitialized() { }
+    async Task CreateDisease()
+    {
+        await http.PostAsJsonAsync("api/disease", disease);
+        uriHelper.NavigateTo("disease");
+    }
+}
