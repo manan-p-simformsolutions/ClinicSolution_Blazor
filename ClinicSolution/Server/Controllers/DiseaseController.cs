@@ -17,7 +17,7 @@ namespace ClinicSolution.Server.Controllers
         private readonly ApplicationDBContext _context;
         public DiseaseController(ApplicationDBContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         [HttpGet]
