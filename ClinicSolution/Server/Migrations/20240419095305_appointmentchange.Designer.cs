@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicSolution.Server.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240320183224_newa")]
-    partial class newa
+    [Migration("20240419095305_appointmentchange")]
+    partial class appointmentchange
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ namespace ClinicSolution.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblAppointments");
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("ClinicSolution.Shared.Disease.Disease", b =>
@@ -81,7 +81,7 @@ namespace ClinicSolution.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblDiseases");
+                    b.ToTable("Diseases");
                 });
 
             modelBuilder.Entity("ClinicSolution.Shared.Patient.Patient", b =>
@@ -116,7 +116,7 @@ namespace ClinicSolution.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblPatients");
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("ClinicSolution.Shared.PatientAppointment.PatientAppointment", b =>
@@ -158,7 +158,7 @@ namespace ClinicSolution.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblPatientAppointments");
+                    b.ToTable("PatientAppointments");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
 using ClinicSolution.Server.Data;
 using Microsoft.EntityFrameworkCore;
+using ClinicSolution.Server.IService;
+using ClinicSolution.Server.Repository;
+using ClinicSolution.Server.Service;
+using ClinicSolution.Server.IRepository;
 
 namespace ClinicSolution.Server
 {
@@ -28,6 +29,14 @@ namespace ClinicSolution.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Register repository
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IDiseaseRepository, DiseaseRepository>();
+
+            // Register service
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IDiseaseService, DiseaseService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

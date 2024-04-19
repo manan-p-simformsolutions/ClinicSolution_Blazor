@@ -14,7 +14,7 @@
     }
     async Task EditAppointment()
     {
-        await http.PutAsJsonAsync("api/appointment", appointment);
+        await http.PutAsJsonAsync($"api/appointment/{appointment.Id}", appointment);
         await js.InvokeVoidAsync("alert", $"Updated Successfully!");
         uriHelper.NavigateTo("appointment");
     }

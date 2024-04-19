@@ -14,7 +14,7 @@
     }
     async Task EditDisease()
     {
-        await http.PutAsJsonAsync("api/disease", disease);
+        await http.PutAsJsonAsync($"api/disease/{disease.Id}", disease);
         await js.InvokeVoidAsync("alert", $"Updated Successfully!");
         uriHelper.NavigateTo("disease");
     }

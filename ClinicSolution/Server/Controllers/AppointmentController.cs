@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ClinicSolution.Server.Data;
+using ClinicSolution.Server.IService;
 using ClinicSolution.Shared.Appointment;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,49 +15,88 @@ namespace ClinicSolution.Server.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-        public AppointmentController(ApplicationDBContext context)
+        private readonly IAppointmentService _appointmentService;
+
+        public AppointmentController(IAppointmentService appointmentService)
         {
-            _context = context;
+            _appointmentService = appointmentService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAllAppointments()
         {
-            var appointments = await _context.tblAppointments.ToListAsync();
-            return Ok(appointments);
+            try
+            {
+                var appointments = await _appointmentService.GetAllAppointments();
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetAppointmentById(int id)
         {
-            var appointment = await _context.tblAppointments.FirstOrDefaultAsync(a => a.Id == id);
-            return Ok(appointment);
+            try
+            {
+                var appointment = await _appointmentService.GetAppointmentById(id);
+                if (appointment == null)
+                    return NotFound();
+
+                return Ok(appointment);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
 
         [HttpPost]
-        public async Task<IActionResult> Post(Appointment appointment)
+        public async Task<IActionResult> CreateAppointment(Appointment appointment)
         {
-            _context.Add(appointment);
-            await _context.SaveChangesAsync();
-            return Ok(appointment.Id);
+            try
+            {
+                var id = await _appointmentService.CreateAppointment(appointment);
+                return CreatedAtAction(nameof(GetAppointmentById), new { id }, appointment);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put(Appointment appointment)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAppointment(int id, Appointment appointment)
         {
-            _context.Entry(appointment).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != appointment.Id)
+                    return BadRequest("Appointment ID mismatch");
+
+                await _appointmentService.UpdateAppointment(appointment);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteAppointment(int id)
         {
-            var appointment = new Appointment { Id = id };
-            _context.Remove(appointment);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                await _appointmentService.DeleteAppointment(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

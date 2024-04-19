@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ClinicSolution.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class newa : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "tblAppointments",
+                name: "Appointments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -29,11 +29,11 @@ namespace ClinicSolution.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblAppointments", x => x.Id);
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblDiseases",
+                name: "Diseases",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -42,11 +42,11 @@ namespace ClinicSolution.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblDiseases", x => x.Id);
+                    table.PrimaryKey("PK_Diseases", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblPatientAppointments",
+                name: "PatientAppointments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -63,11 +63,11 @@ namespace ClinicSolution.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblPatientAppointments", x => x.Id);
+                    table.PrimaryKey("PK_PatientAppointments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblPatients",
+                name: "Patients",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -82,7 +82,7 @@ namespace ClinicSolution.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblPatients", x => x.Id);
+                    table.PrimaryKey("PK_Patients", x => x.Id);
                 });
         }
 
@@ -90,16 +90,16 @@ namespace ClinicSolution.Server.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tblAppointments");
+                name: "Appointments");
 
             migrationBuilder.DropTable(
-                name: "tblDiseases");
+                name: "Diseases");
 
             migrationBuilder.DropTable(
-                name: "tblPatientAppointments");
+                name: "PatientAppointments");
 
             migrationBuilder.DropTable(
-                name: "tblPatients");
+                name: "Patients");
         }
     }
 }

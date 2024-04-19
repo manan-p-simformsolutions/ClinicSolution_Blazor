@@ -11,10 +11,10 @@ namespace ClinicSolution.Server.Data
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
         }
-        public virtual DbSet<PatientAppointment> tblPatientAppointments { get; set; }
-        public virtual DbSet<Appointment> tblAppointments { get; set; }
-        public virtual DbSet<Disease> tblDiseases { get; set; }
-        public virtual DbSet<Patient> tblPatients { get; set; }
+        public virtual DbSet<PatientAppointment> PatientAppointments { get; set; }
+        public virtual DbSet<Appointment> Appointments { get; set; }
+        public virtual DbSet<Disease> Diseases { get; set; }
+        public virtual DbSet<Patient> Patients { get; set; }
 
     }
 }

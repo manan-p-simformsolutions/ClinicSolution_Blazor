@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ClinicSolution.Server.Data;
+using ClinicSolution.Server.IService;
 using ClinicSolution.Shared.Disease;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ClinicSolution.Server.Controllers
 {
@@ -14,49 +10,87 @@ namespace ClinicSolution.Server.Controllers
     [ApiController]
     public class DiseaseController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-        public DiseaseController(ApplicationDBContext context)
+        private readonly IDiseaseService _diseaseService;
+
+        public DiseaseController(IDiseaseService diseaseService)
         {
-            _context = context;
+            _diseaseService = diseaseService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAllDiseases()
         {
-            var diseases = await _context.tblDiseases.ToListAsync();
-            return Ok(diseases);
+            try
+            {
+                var diseases = await _diseaseService.GetAllDisease();
+                return Ok(diseases);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetDiseaseById(int id)
         {
-            var disease = await _context.tblDiseases.FirstOrDefaultAsync(a => a.Id == id);
-            return Ok(disease);
+            try
+            {
+                var disease = await _diseaseService.GetDiseaseById(id);
+                if (disease == null)
+                    return NotFound();
+
+                return Ok(disease);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Disease disease)
+        public async Task<IActionResult> CreateDisease(Disease disease)
         {
-            _context.Add(disease);
-            await _context.SaveChangesAsync();
-            return Ok(disease.Id);
+            try
+            {
+                var id = await _diseaseService.CreateDisease(disease);
+                return CreatedAtAction(nameof(GetDiseaseById), new { id }, disease);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put(Disease disease)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateDisease(int id, Disease disease)
         {
-            _context.Entry(disease).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != disease.Id)
+                    return BadRequest("Disease ID mismatch");
+
+                await _diseaseService.UpdateDisease(disease);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteDisease(int id)
         {
-            var disease = new Disease { Id = id };
-            _context.Remove(disease);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                await _diseaseService.DeleteDisease(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
