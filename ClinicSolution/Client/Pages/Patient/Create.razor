@@ -1,0 +1,17 @@
+﻿@page "/patient/create"
+@inject HttpClient http
+@inject NavigationManager uriHelper
+<h3>Create</h3>
+<Form ButtonText = "Add Patient" patient = "@patient"
+      OnValidSubmit="@CreatePatient" />
+@code{
+    Patient patient = new Patient();
+    protected override void OnInitialized()
+    {
+        patient.CreatedDate = DateTime.Now;
+    }
+    async Task CreatePatient(){
+        await http.PostAsJsonAsync("api/patient", patient);
+        uriHelper.NavigateTo("patient");
+    }
+}

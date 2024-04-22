@@ -1,0 +1,93 @@
+﻿@page "/patient"
+@inject HttpClient client
+@inject IJSRuntime js
+
+<h3>Patients</h3>
+
+<div class="form-group">
+    <a class="btn btn-success" href="patient/create"><i class="oi oi-plus"></i> Create New</a>&nbsp;<small>Add as many patients as you wish.</small>
+</div>
+<br>
+
+@if (patients == null)
+{
+    <text>Loading...</text>
+}
+else if (patients.Length == 0)
+{
+    <text>No Records Found.</text>
+}
+else
+{
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Filter..."
+               @bind="Filter"
+               @bind:event="oninput">
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address1</th>
+                <th>Address2</th>
+                <th>Mobile</th>
+                <th>Telephone</th>
+                <th>LastAppointmentId</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Patient patient in patients)
+            {
+                if (!IsVisible(patient))
+                    continue;
+                <tr>
+                    <td>@patient.Id</td>
+                    <td>@patient.Name</td>
+                    <td>@patient.Address1</td>
+                    <td>@patient.Address2</td>
+                    <td>@patient.Mobile</td>
+                    <td>@patient.Telephone</td>
+                    <td>@patient.LastAppointmentId</td>
+                    <td>
+                        <a class="btn btn-success" href="patient/edit/@patient.Id">Edit</a>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(patient.Id))">Delete</button>
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+}
+@code {
+    public string Filter { get; set; }
+    Patient[] patients { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        patients = await client.GetFromJsonAsync<Patient[]>("api/patient");
+    }
+
+    async Task Delete(int patientId)
+    {
+        var patient = patients.First(x => x.Id == patientId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {patient.Name} Record?"))
+        {
+            await client.DeleteAsync($"api/patient/{patientId}");
+            await OnInitializedAsync();
+        }
+    }
+    bool IsVisible(Patient patient)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+
+        if (patient.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase)
+            || patient.Id.ToString().StartsWith(Filter)
+            || patient.Address1.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+}

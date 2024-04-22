@@ -28,7 +28,7 @@ namespace ClinicSolution.Server.Repository
         {
             var disease = await _context.Diseases.FindAsync(id);
             if (disease == null)
-                throw new ArgumentException($"Appointment with ID {id} not found.");
+                throw new ArgumentException($"Disease with ID {id} not found.");
 
             _context.Diseases.Remove(disease);
             await _context.SaveChangesAsync();

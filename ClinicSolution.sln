@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30717.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicSolution.Server", "ClinicSolution\Server\ClinicSolution.Server.csproj", "{63A90B35-9507-4380-A2FF-F87A18955BBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicSolution.Server", "ClinicSolution\Server\ClinicSolution.Server.csproj", "{63A90B35-9507-4380-A2FF-F87A18955BBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicSolution.Client", "ClinicSolution\Client\ClinicSolution.Client.csproj", "{764E578D-0F1E-4618-8587-1FF145EA604C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicSolution.Client", "ClinicSolution\Client\ClinicSolution.Client.csproj", "{764E578D-0F1E-4618-8587-1FF145EA604C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicSolution.Shared", "ClinicSolution\Shared\ClinicSolution.Shared.csproj", "{182853F3-EAB7-4061-85F0-9AB057047B44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicSolution.Shared", "ClinicSolution\Shared\ClinicSolution.Shared.csproj", "{182853F3-EAB7-4061-85F0-9AB057047B44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

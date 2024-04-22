@@ -33,10 +33,12 @@ namespace ClinicSolution.Server
             // Register repository
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IDiseaseRepository, DiseaseRepository>();
+            services.AddScoped<IPatientRepository, PatientRepository>();
 
             // Register service
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IDiseaseService, DiseaseService>();
+            services.AddScoped<IPatientService, PatientService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
